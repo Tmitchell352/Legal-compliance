@@ -159,6 +159,16 @@ Ongoing maintenance loop once you're running this for real:
    done; the compounding task is keeping `jurisdictions` accurate and adding
    new cities, which is a research task, not a dev task.
 
+## Before you charge real money
+
+`/terms` and `/privacy` are real, substantive templates (not lorem ipsum),
+but they're written with bracketed placeholders — `[LEGAL ENTITY NAME]`,
+`[JURISDICTION]`, `[SUPPORT EMAIL]`, `[DATE]` — because those are decisions
+only you can make (what entity is selling this, in what jurisdiction, under
+what support address). Fill those in and have both pages reviewed by a
+lawyer before taking a live payment; Stripe also expects a working terms/
+privacy link for your account. The signup page already links to both.
+
 ## What's not implemented (be aware before launching)
 
 - No automated ordinance-change monitoring — the `jurisdictions` table is

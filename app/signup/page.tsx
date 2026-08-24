@@ -46,6 +46,18 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
         </button>
       </form>
 
+      <p className="mt-4 text-xs text-slate-500">
+        By creating an account you agree to the{" "}
+        <Link href="/terms" className="text-amber-500 hover:underline">
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="text-amber-500 hover:underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
+
       <p className="mt-6 text-sm text-slate-400">
         Already have an account?{" "}
         <Link href="/login" className="text-amber-500 hover:underline">
