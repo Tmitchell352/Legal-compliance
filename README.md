@@ -49,7 +49,8 @@ lib/
   supabase/                 Browser + server + service-role Supabase clients
   stripe.ts, email.ts       Stripe SDK + Resend email templating
 supabase/
-  migrations/0001_init.sql  Full schema + RLS policies
+  migrations/0001_init.sql  Core schema + RLS policies
+  migrations/0002_storage.sql  Private Storage bucket + RLS for the document vault
   seed.sql                  18 curated jurisdictions (see "Content operations" below)
 types/database.ts           Hand-written types mirroring the schema
 ```
@@ -65,6 +66,7 @@ types/database.ts           Hand-written types mirroring the schema
 2. **Create a Supabase project** at [supabase.com](https://supabase.com), then in
    the SQL editor run, in order:
    - `supabase/migrations/0001_init.sql`
+   - `supabase/migrations/0002_storage.sql`
    - `supabase/seed.sql`
 
    (Or, with the Supabase CLI installed and linked: `supabase db push` then
@@ -158,9 +160,6 @@ Ongoing maintenance loop once you're running this for real:
 
 ## What's not implemented (be aware before launching)
 
-- Document upload (Supabase Storage) is designed for in the schema
-  (`documents` table) but the upload UI isn't built yet — add a Storage
-  bucket + an upload form on the property page when you need it.
 - No automated ordinance-change monitoring — the `jurisdictions` table is
   operator-maintained, not auto-scraped. That's a legitimate v2 feature
   (e.g., a scheduled job that diffs official pages) but comes with real

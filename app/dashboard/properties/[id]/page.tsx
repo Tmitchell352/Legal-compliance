@@ -2,11 +2,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DeadlineBadge } from "@/components/DeadlineBadge";
-import type { ComplianceDeadline, Jurisdiction, Property } from "@/types/database";
+import type { ComplianceDeadline, DocumentRow, Jurisdiction, Property } from "@/types/database";
 import { markDeadlineComplete, deleteProperty } from "./actions";
+import { uploadDocument, deleteDocument } from "./documents-actions";
 
-export default async function PropertyDetailPage({ params }: { params: Promise<{ id: string }> }) {
+const DOCUMENTS_BUCKET = "property-documents";
+
+export default async function PropertyDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ doc_error?: string }>;
+}) {
   const { id } = await params;
+  const { doc_error } = await searchParams;
   const supabase = await createClient();
 
   const { data: property } = await supabase.from("properties").select("*").eq("id", id).single<Property>();
@@ -25,6 +35,20 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
 
   const upcoming = (deadlines ?? []).filter((d) => d.status === "upcoming");
   const completed = (deadlines ?? []).filter((d) => d.status !== "upcoming");
+
+  const { data: documents } = await supabase
+    .from("documents")
+    .select("*")
+    .eq("property_id", id)
+    .order("uploaded_at", { ascending: false })
+    .returns<DocumentRow[]>();
+
+  const documentsWithUrls = await Promise.all(
+    (documents ?? []).map(async (doc) => {
+      const { data } = await supabase.storage.from(DOCUMENTS_BUCKET).createSignedUrl(doc.storage_path, 60 * 10);
+      return { ...doc, url: data?.signedUrl ?? null };
+    })
+  );
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -149,6 +173,66 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
           </ul>
         </div>
       )}
+
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold text-slate-100">Documents</h2>
+        <p className="mt-1 text-sm text-slate-400">
+          Keep the permit PDF, insurance certificate, and inspection reports for this property here.
+        </p>
+
+        {doc_error && (
+          <p className="mt-3 rounded-md border border-red-900 bg-red-950/50 px-3 py-2 text-sm text-red-300">
+            {doc_error}
+          </p>
+        )}
+
+        {documentsWithUrls.length > 0 && (
+          <ul className="mt-4 flex flex-col gap-2">
+            {documentsWithUrls.map((doc) => (
+              <li
+                key={doc.id}
+                className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/40 px-4 py-3"
+              >
+                {doc.url ? (
+                  <a href={doc.url} target="_blank" rel="noreferrer" className="text-sm text-slate-200 hover:text-amber-400">
+                    {doc.name}
+                  </a>
+                ) : (
+                  <span className="text-sm text-slate-500">{doc.name} (unavailable)</span>
+                )}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-slate-500">{new Date(doc.uploaded_at).toLocaleDateString()}</span>
+                  <form action={deleteDocument}>
+                    <input type="hidden" name="document_id" value={doc.id} />
+                    <input type="hidden" name="property_id" value={property.id} />
+                    <button type="submit" className="text-xs text-red-400 hover:text-red-300">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <form action={uploadDocument} className="mt-4 flex items-center gap-3">
+          <input type="hidden" name="property_id" value={property.id} />
+          <input
+            type="file"
+            name="file"
+            required
+            accept="application/pdf,image/*"
+            className="flex-1 text-sm text-slate-400 file:mr-3 file:rounded-md file:border-0 file:bg-slate-800 file:px-3 file:py-1.5 file:text-sm file:text-slate-200 hover:file:bg-slate-700"
+          />
+          <button
+            type="submit"
+            className="rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-amber-400"
+          >
+            Upload
+          </button>
+        </form>
+        <p className="mt-1 text-xs text-slate-600">PDF or image, up to 10MB.</p>
+      </div>
     </div>
   );
 }
