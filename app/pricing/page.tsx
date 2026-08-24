@@ -15,23 +15,13 @@ const PLANS = [
     tagline: "For hosts running a few units",
     cta: { href: "/api/stripe/checkout?plan=pro", label: "Upgrade to Pro" },
     highlight: true,
-    features: [
-      "Up to 5 properties",
-      "Everything in Free",
-      "Priority regulation-change alerts",
-      "Multi-property renewal calendar",
-    ],
+    features: ["Up to 5 properties", "Everything in Free", "Multi-property renewal calendar", "CSV export"],
   },
   {
     tier: "portfolio" as const,
     tagline: "For property managers & investors",
     cta: { href: "/api/stripe/checkout?plan=portfolio", label: "Upgrade to Portfolio" },
-    features: [
-      "Up to 25 properties",
-      "Everything in Pro",
-      "CSV export for accountants",
-      "Early access to new markets",
-    ],
+    features: ["Up to 25 properties", "Everything in Pro", "Early access to new markets"],
   },
 ];
 

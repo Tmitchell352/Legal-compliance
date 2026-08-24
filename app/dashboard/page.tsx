@@ -55,21 +55,31 @@ export default async function DashboardPage() {
             {properties?.length ?? 0} of {limit} properties used on the {TIER_LIMITS[tier].label} plan.
           </p>
         </div>
-        {atLimit ? (
-          <Link
-            href="/pricing"
-            className="rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-amber-400"
-          >
-            Upgrade to add more
-          </Link>
-        ) : (
-          <Link
-            href="/dashboard/properties/new"
-            className="rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-amber-400"
-          >
-            + Add property
-          </Link>
-        )}
+        <div className="flex items-center gap-3">
+          {tier !== "free" && (
+            <a
+              href="/api/export/properties"
+              className="rounded-md border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 hover:border-slate-500"
+            >
+              Export CSV
+            </a>
+          )}
+          {atLimit ? (
+            <Link
+              href="/pricing"
+              className="rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-amber-400"
+            >
+              Upgrade to add more
+            </Link>
+          ) : (
+            <Link
+              href="/dashboard/properties/new"
+              className="rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-amber-400"
+            >
+              + Add property
+            </Link>
+          )}
+        </div>
       </div>
 
       {!properties || properties.length === 0 ? (
