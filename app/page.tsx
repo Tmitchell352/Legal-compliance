@@ -83,7 +83,7 @@ export default async function LandingPage() {
 
         <section id="coverage" className="mx-auto max-w-6xl px-6 py-20">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-semibold text-slate-100">Coverage across 18 of the strictest STR markets</h2>
+            <h2 className="text-2xl font-semibold text-slate-100">Coverage across 28 of the strictest STR markets</h2>
             <p className="mt-3 text-slate-400">
               We start with the cities where compliance actually bites — capped-permit lotteries, primary-residence
               rules, and quarterly filings — and expand from host requests.

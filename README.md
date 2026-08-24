@@ -51,7 +51,7 @@ lib/
 supabase/
   migrations/0001_init.sql  Core schema + RLS policies
   migrations/0002_storage.sql  Private Storage bucket + RLS for the document vault
-  seed.sql                  18 curated jurisdictions (see "Content operations" below)
+  seed.sql                  28 curated jurisdictions (see "Content operations" below)
 types/database.ts           Hand-written types mirroring the schema
 ```
 
@@ -121,12 +121,13 @@ types/database.ts           Hand-written types mirroring the schema
 
 The `jurisdictions` table is the editorial core of Permitly — it's what
 turns a generic reminders app into something hosts trust. `supabase/seed.sql`
-ships with 18 markets, five of which (New York, Los Angeles, San Francisco,
-New Orleans, Honolulu) were cross-checked against official city sources at
-write time; the rest are directionally correct from general knowledge and
-flagged with an earlier `last_verified_on` date specifically so you re-verify
-them before leaning on them commercially. **This is not legal advice** —
-every page says so, and that disclaimer should stay.
+ships with 28 markets. Nine of them (New York, Los Angeles, San Francisco,
+New Orleans, Honolulu, South Lake Tahoe, Sedona, Gatlinburg, Key West) were
+cross-checked against official/primary sources at write time — the rest are
+directionally correct from general knowledge and flagged with an earlier
+`last_verified_on` date specifically so you re-verify them before leaning on
+them commercially. **This is not legal advice** — every page says so, and
+that disclaimer should stay.
 
 Ongoing maintenance loop once you're running this for real:
 - Re-verify each row against its official source on a rolling basis (the
